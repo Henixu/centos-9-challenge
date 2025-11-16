@@ -46,6 +46,11 @@ export function QuizCard({
 }: QuizCardProps) {
   const [selectedChoice, setSelectedChoice] = useState<'A' | 'B' | 'C' | 'D' | null>(userAnswer);
 
+  // Keep local selection in sync when parent provides a userAnswer (e.g. navigating back)
+  useEffect(() => {
+    setSelectedChoice(userAnswer);
+  }, [userAnswer]);
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key in choiceKeys) {
@@ -156,7 +161,8 @@ export function QuizCard({
           </Button>
           <Button
             onClick={onNext}
-            disabled={!selectedChoice || isLastQuestion}
+            // Enable the button when a choice is selected. onNext should handle submit when `isLastQuestion` is true.
+            disabled={!selectedChoice}
             className="flex-1"
             aria-label={isLastQuestion ? 'Submit quiz' : 'Next question'}
           >
